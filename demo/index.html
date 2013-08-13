@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jQuery PixelHoldr demo</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="../src/jquery.pixelholdr.js"></script>
+        
+        <script>
+            $(document).ready(function(){
+                // add your flickr API key in the quotes below.
+                $(".pixelholdr").pixelholdr({flickrKey:''});
+            });
+        </script>
+        
+        <style>
+            body,html{
+                margin: 0;
+                padding: 0;
+                font-family: Arial;
+            }
+            .pixelholdr{
+                margin: 20px auto;
+                
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pixelholdr" style="width: 300px; height: 400px;background: blue;">kitten</div>
+        <div class="pixelholdr" style="width: 200px; height: 500px;background: green;">puppy</div>
+        <div class="pixelholdr" style="width: 400px; height: 200px;background: red;">bunny</div>
+        <div class="pixelholdr" style="width: 700px; height: 300px;background: purple;">kitten</div>
+        <div class="pixelholdr" style="width: 200px; height: 200px;background: yellow;">puppy</div>
+        <div class="pixelholdr" style="width: 600px; height: 100px;background: orange;">bunny</div>
+    </body>
+</html>
