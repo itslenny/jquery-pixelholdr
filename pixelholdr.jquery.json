@@ -1,15 +1,18 @@
 {
     "name": "pixelholdr",
     "title": "jQuery PixelHoldr",
-    "description": "A tool to quickly grab place holder images from flickr",
+    "description": "A tool to quickly grab place holder images from flickr. Useful for rapid prototyping demo sites with temporary filler images.",
     "keywords": [
         "pixelholdr",
-        "place holder",
+        "holder",
+        "placeholder",
+        "flickr",
+        "image",
         "development",
         "simple",
         "quick"
     ],
-    "version": "0.8.1",
+    "version": "0.8.2",
     "author": {
         "name": "Lenny Urbanowski"
     },

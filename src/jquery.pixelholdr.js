@@ -1,5 +1,5 @@
 /*
- *      jQuery PixelHoldr v0.8.1 
+ *      jQuery PixelHoldr v0.8.2
  *
  *      A tool to quickly grab place holder images from flickr
  *
@@ -18,7 +18,10 @@
          {
             flickrKey: null,
             flickrBaseURL: 'http://api.flickr.com/services/rest/',
-            flickrSafeSearch: 1
+            flickrSafeSearch: 1,
+            showDimensions: true,
+            dimensionsFontSize: '40px',
+            dimensionsColor: '#FFFFFF'
          },
         pixelholdr: function(options)
         {
@@ -34,15 +37,27 @@
         initializeItem: function(obj)
         {
             var self=this;
-            var mySearchTags=$(obj).html();
 
+            //allow img tags
+            if($(obj).is('img')){
+                var newObj = $('<div>').html($(obj).attr('src')).attr('class',$(obj).attr('class')).attr('id',$(obj).attr('id')).attr('style',$(obj).attr('style')).width($(obj).width()).height($(obj).height());
+                $(obj).replaceWith(newObj);
+                obj=newObj;
+            }
+            
+            var mySearchTags = $(obj).html();
             $(obj).css({'overflow':'hidden'});
             $.getJSON(self._getFlickrSearchURL(mySearchTags),function(data){
                 if(!data.photos) return;
                 photo = data.photos.photo[Math.floor(Math.random()*data.photos.photo.length)];
                 if(photo && photo.id){
                     $.getJSON(self._getFlickrImageURL(photo.id),function(pdata){  
-                        $(obj).html('');
+                        $(obj).html('').css('position','relative');
+                        
+                        if(self.options.showDimensions){
+                            $(obj).prepend('<div style="position: absolute; bottom: 0; width: '+$(obj).width()+'px; text-align: center; font-size: '+self.options.dimensionsFontSize+';color: '+self.options.dimensionsColor+'; text-shadow: 0.1em 0.1em #333;">'+$(obj).width()+'x'+$(obj).height()+'</div>')
+                        }
+                        
                         $('<img>').attr({'src':self._getProperImageSource(pdata,obj), 'alt':mySearchTags}).appendTo(obj).load(function(){
                             console.log('obj (div): '+$(obj).width()+'x'+$(obj).height());
                             console.log('this (img): '+$(this).width()+'x'+$(this).height());
