@@ -19,7 +19,11 @@ To use jQuery PixelHoldr simply create a div with a defined height / width and t
   });
 </script>
 <div style="width: 400px; height: 300px;" class="pixelholdr">Kittens</div>
+
+<img src="puppy" width="400" height="300" class="pixelholdr">
 ```
+
+Both of the above images would be filled with images from flickr on page load.
 
 See the index.html file in the demo directory for a simple example.
 
@@ -27,4 +31,6 @@ See the index.html file in the demo directory for a simple example.
 
 * flickrKey: Used to pass in your Flickr API key (required).
 * flickrSafeSearch: Can be used to disable safe search. Defaults to 1 (safe search enabled) to disable set it to 0.
-
+* showDimensions: overlays dimensions of each image (default: true)
+* dimensionsFontSize: allows you to change the font size of the dimensions displayed (default: 40px)
+* dimensionsColor: allows you to change the color of the dimensions displayed (default: white)
