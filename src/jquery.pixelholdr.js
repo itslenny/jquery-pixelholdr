@@ -1,5 +1,5 @@
 /*
- *      jQuery PixelHoldr v0.8.2
+ *      jQuery PixelHoldr v0.9.1
  *
  *      A tool to quickly grab place holder images from flickr
  *
@@ -14,30 +14,29 @@
 
 (function($){
     $.fn.extend({
-         options:
-         {
-            flickrKey: null,
-            flickrBaseURL: 'http://api.flickr.com/services/rest/',
-            flickrSafeSearch: 1,
-            showDimensions: true,
-            dimensionsFontSize: '40px',
-            dimensionsColor: '#FFFFFF'
-         },
         pixelholdr: function(options)
         {
             if(!options.flickrKey){ alert('Missing Flickr API key.'); }
-            var self=this;
-            $.extend(self.options, options);
+             defaults = {
+                flickrKey: null,
+                flickrBaseURL: 'http://api.flickr.com/services/rest/',
+                flickrSafeSearch: 1,
+                showDimensions: true,
+                dimensionsFontSize: '40px',
+                dimensionsColor: '#FFFFFF'
+             }        
+            $.extend(defaults, options);
             return this.each(function() {
-               var o=options;
-               self.initializeItem(this);                
+               new PixelHoldr(this,defaults);                
             });
-        },
+        }
+    });
+    
+    function PixelHoldr(obj,opts){
+        var options=opts;
         //set up the menu... called on each object passed through
-        initializeItem: function(obj)
+        var initializeItem = function(obj)
         {
-            var self=this;
-
             //allow img tags
             if($(obj).is('img')){
                 var newObj = $('<div>').html($(obj).attr('src')).attr('class',$(obj).attr('class')).attr('id',$(obj).attr('id')).attr('style',$(obj).attr('style')).width($(obj).width()).height($(obj).height());
@@ -47,21 +46,18 @@
             
             var mySearchTags = $(obj).html();
             $(obj).css({'overflow':'hidden'});
-            $.getJSON(self._getFlickrSearchURL(mySearchTags),function(data){
+            $.getJSON(_getFlickrSearchURL(mySearchTags),function(data){
                 if(!data.photos) return;
                 photo = data.photos.photo[Math.floor(Math.random()*data.photos.photo.length)];
                 if(photo && photo.id){
-                    $.getJSON(self._getFlickrImageURL(photo.id),function(pdata){  
+                    $.getJSON(_getFlickrImageURL(photo.id),function(pdata){  
                         $(obj).html('').css('position','relative');
                         
-                        if(self.options.showDimensions){
-                            $(obj).prepend('<div style="position: absolute; bottom: 0; width: '+$(obj).width()+'px; text-align: center; font-size: '+self.options.dimensionsFontSize+';color: '+self.options.dimensionsColor+'; text-shadow: 0.1em 0.1em #333;">'+$(obj).width()+'x'+$(obj).height()+'</div>')
+                        if(options.showDimensions){
+                            $(obj).prepend('<div style="position: absolute; bottom: 0; width: '+$(obj).width()+'px; text-align: center; font-size: '+options.dimensionsFontSize+';color: '+options.dimensionsColor+'; text-shadow: 0.1em 0.1em #333;">'+$(obj).width()+'x'+$(obj).height()+'</div>')
                         }
                         
-                        $('<img>').attr({'src':self._getProperImageSource(pdata,obj), 'alt':mySearchTags}).appendTo(obj).load(function(){
-                            console.log('obj (div): '+$(obj).width()+'x'+$(obj).height());
-                            console.log('this (img): '+$(this).width()+'x'+$(this).height());
-                            console.log((($(obj).height() * $(this).width()) /  $(obj).height())+' > '+$(obj).width());
+                        $('<img>').attr({'src':_getProperImageSource(pdata,obj), 'alt':mySearchTags}).appendTo(obj).load(function(){
 
                             //scale
                             if(($(this).height() * $(obj).width()) /  $(this).width() > $(obj).height()){
@@ -81,14 +77,14 @@
                     });
                 }
             });
-        },
-        _getFlickrSearchURL: function(tags){
-            return this.options.flickrBaseURL+'?method=flickr.photos.search&api_key='+this.options.flickrKey+'&tags='+tags+'&safe_search='+this.options.flickrSafeSearch+'&content_type=1&format=json&jsoncallback=?';
-        },
-        _getFlickrImageURL: function(pid){
-            return this.options.flickrBaseURL+'?method=flickr.photos.getSizes&api_key='+this.options.flickrKey+'&photo_id='+pid+'&format=json&jsoncallback=?';
-        },
-        _getProperImageSource: function(data,obj){
+        }
+        var _getFlickrSearchURL = function(tags){
+            return options.flickrBaseURL+'?method=flickr.photos.search&api_key='+options.flickrKey+'&tags='+tags+'&safe_search='+options.flickrSafeSearch+'&content_type=1&format=json&jsoncallback=?';
+        }
+        var _getFlickrImageURL = function(pid){
+            return options.flickrBaseURL+'?method=flickr.photos.getSizes&api_key='+options.flickrKey+'&photo_id='+pid+'&format=json&jsoncallback=?';
+        }
+        var _getProperImageSource = function(data,obj){
             var oWidth=$(obj).width();
             var oHeight=$(obj).height();
             for(var i in data.sizes.size){
@@ -101,5 +97,7 @@
             //if all else fails just use the biggest one...
             return data.sizes.size.pop().source;
         }
-    });
+        //start it up
+        initializeItem(obj);
+    }
 })(jQuery);
